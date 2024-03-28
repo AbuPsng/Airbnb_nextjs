@@ -4,7 +4,7 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import Modal from "./Modal";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
@@ -47,6 +47,11 @@ const LoginModal = () => {
     });
   };
 
+  const toggle = useCallback(() => {
+    loginModal.onClose();
+    registerModal.onOpen();
+  }, [loginModal, registerModal]);
+
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading title="Welcome back" subtitle="Login to your account" />
@@ -60,6 +65,7 @@ const LoginModal = () => {
       />
       <Input
         id="password"
+        type="password"
         label="Password"
         disabled={isLoading}
         register={register}
@@ -95,7 +101,7 @@ const LoginModal = () => {
         <p>
           {"Don't"} have an account?
           <span
-            onClick={loginModal.onClose}
+            onClick={toggle}
             className="
             text-neutral-800
             cursor-pointer 
@@ -114,7 +120,7 @@ const LoginModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={loginModal.isOpen}
-      title="Register"
+      title="Login"
       actionLabel="Continue"
       onClose={loginModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
