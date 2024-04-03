@@ -6,7 +6,7 @@ import ListingInfo from "@/app/_components/listings/ListingInfo";
 import ListingReservations from "@/app/_components/listings/ListingReservations";
 import { categories } from "@/app/_components/navbar/Categories";
 import useLoginModal from "@/app/hooks/useLoginModal";
-import { SafeListings, SafeUser } from "@/app/types";
+import { SafeListings, SafeReservation, SafeUser } from "@/app/types";
 import { Reservation } from "@prisma/client";
 import axios from "axios";
 import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
@@ -22,7 +22,7 @@ const initialDateRange = {
 };
 
 type ListingClientProps = {
-  reservations?: Reservation[];
+  reservations?: SafeReservation[];
   listing: SafeListings & {
     user: SafeUser;
   };
@@ -59,7 +59,8 @@ const ListingClient: React.FC<ListingClientProps> = ({
     if (!currentUser) return loginModal.onOpen();
     setIsLoading(true);
     axios
-      .post(`/api/reservations/${listing?.id}`, {
+      .post(`/api/reservations`, {
+        listingId: listing.id,
         totalPrice,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
