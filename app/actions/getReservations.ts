@@ -21,7 +21,7 @@ export default async function getReservations(params: IParams) {
     }
 
     if (authorId) {
-      query.authorId = { userId: authorId };
+      query.listing = { userId: authorId };
     }
 
     const reservations = await client?.reservation.findMany({
@@ -44,6 +44,8 @@ export default async function getReservations(params: IParams) {
         createAt: reservation.listing.createAt.toISOString(),
       },
     }));
+
+    console.log();
 
     return convertedDateReservation;
   } catch (error: any) {

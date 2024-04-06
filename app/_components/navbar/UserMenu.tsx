@@ -12,6 +12,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { signOut } from "next-auth/react";
 import { SafeUser } from "@/app/types";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type UserMenuProps = {
   currentUser?: SafeUser | null;
@@ -19,6 +20,9 @@ type UserMenuProps = {
 
 const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const router = useRouter();
+
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const rentModal = useRentModal();
@@ -34,6 +38,11 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
     }
     rentModal.onOpen();
   }, [loginModal, rentModal, currentUser]);
+
+  const redirect = (str: string) => {
+    setIsOpen(false);
+    router.push(str);
+  };
 
   return (
     <div className="relative">
@@ -61,13 +70,22 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
           <div className="flex flex-col cursor-pointer">
             {currentUser ? (
               <>
-                <MenuItems onClick={() => {}} label="My trips" />
-                <MenuItems onClick={() => {}} label="My favorites" />
                 <MenuItems
-                  onClick={loginModal.onOpen}
+                  onClick={() => redirect("/trips")}
+                  label="My trips"
+                />
+                <MenuItems
+                  onClick={() => redirect("/favorites")}
+                  label="My favorites"
+                />
+                <MenuItems
+                  onClick={() => redirect("/reservation")}
                   label="My reservations"
                 />
-                <MenuItems onClick={() => {}} label="My properties" />
+                <MenuItems
+                  onClick={() => redirect("/properties")}
+                  label="My properties"
+                />
                 <MenuItems onClick={onRent} label="Airbnb my home" />
                 <hr />
                 <MenuItems onClick={() => signOut()} label="Logout" />
